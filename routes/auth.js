@@ -8,6 +8,17 @@ const jwtSecret = process.env.JWT_SECRET;
 
 const router = express.Router();
 
+//verification 
+
+router.get('/verify', (req, res) => {
+    const token = req.headers['authorization'];
+    if (!token) return res.sendStatus(401);
+    jwt.verify(token, jwtSecret, (error) => {
+        if (error) return res.sendStatus(403);
+        res.sendStatus(200);
+    });
+})
+
 //Regsistration 
 router.post('/registration', async (req, res) => {
     const {username, password} = req.body;

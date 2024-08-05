@@ -1,5 +1,24 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     
+    //verify user
+    const token = localStorage.getItem('token');
+    if (token) {
+        try {
+            const res = await fetch('/api/auth/verify', {
+                headers: {'authorization': `${token}`}
+            });
+            if (res.ok) {
+                window.location.href = './home.html';
+            } else {
+                localStorage.removeItem('token');
+            }
+        } catch (error) {
+            console.error('Error verifying token: ', error);
+            localStorage.removeItem('token');
+        }
+    }
+
+
     //registration
     const registerForm = document.getElementById('register-form');
     registerForm.addEventListener('submit', async (event)  => {
@@ -43,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const {token} = await res.json();
                 localStorage.setItem('token', token);
                 alert('Login SuccessFull');
+                window.location.href = '/home.html';
             } else {
                 alert('Login unsuccessfull');
             }
