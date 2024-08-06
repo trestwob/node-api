@@ -19,7 +19,7 @@ router.get('/verify', (req, res) => {
     });
 })
 
-//Regsistration 
+//Regsistration
 router.post('/registration', async (req, res) => {
     const {username, password} = req.body;
     try {
@@ -46,5 +46,16 @@ router.post('/login', async (req, res) => {
         res.status(500).json({message: error.message});
     }
 })
+
+router.delete('/delete', async (req, res) => {
+    const token = req.headers['authorization'];
+    if (!token) return res.sendStatus(401);
+    jwt.verify(token, jwtSecret, async (error, user) => {
+        if (error) return res.sendStatus(403);
+        await User.findByIdAndDelete(user.id);
+        res.sendStatus(200);
+    })
+})
+
 
 module.exports = router;
